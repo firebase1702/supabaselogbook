@@ -72,6 +72,45 @@ const App: React.FC = () => {
 
     return () => subscription.unsubscribe();
   }, []);
+// --- idletime  ---
+  useEffect(() => {
+    if (!session) return;
+
+    let idleTimer: NodeJS.Timeout;
+    const IDLE_TIME_LIMIT = 3 * 60 * 1000; // 30 menit
+
+    const handleLogout = async () => {
+      await supabase.auth.signOut();
+      setNotification({
+        show: true,
+        message: 'Sesi berakhir karena tidak ada aktivitas. Silakan login kembali.',
+        type: 'error'
+      });
+    };
+
+    const resetTimer = () => {
+      if (idleTimer) clearTimeout(idleTimer);
+      idleTimer = setTimeout(handleLogout, IDLE_TIME_LIMIT);
+    };
+
+    const activityEvents = ['mousemove', 'keydown', 'mousedown', 'scroll', 'click'];
+
+    activityEvents.forEach(event => 
+      window.addEventListener(event, resetTimer)
+    );
+
+    resetTimer();
+
+    return () => {
+      if (idleTimer) clearTimeout(idleTimer);
+      activityEvents.forEach(event => 
+        window.removeEventListener(event, resetTimer)
+      );
+    };
+  }, [session]);
+
+  const fetchUserRole = async (userId: string) => {
+    // ...
 
   const fetchUserRole = async (userId: string) => {
   try {
