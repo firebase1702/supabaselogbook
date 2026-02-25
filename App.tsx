@@ -179,6 +179,46 @@ const App: React.FC = () => {
     await supabase.auth.signOut();
   };
 
+  // Auto Logout on Idle (30 Minutes)
+  useEffect(() => {
+    if (!session) return;
+
+    const TIMEOUT_DURATION = 30 * 60 * 1000; // 30 minutes
+    let timeoutId: NodeJS.Timeout;
+
+    const handleIdle = () => {
+      handleLogout();
+      setNotification({ 
+        show: true, 
+        message: 'Sesi berakhir karena tidak aktif selama 30 menit.', 
+        type: 'error' 
+      });
+    };
+
+    const resetTimer = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(handleIdle, TIMEOUT_DURATION);
+    };
+
+    const activityEvents = [
+      'mousedown', 'mousemove', 'keydown', 
+      'scroll', 'touchstart', 'click'
+    ];
+
+    activityEvents.forEach(event => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    resetTimer();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      activityEvents.forEach(event => {
+        window.removeEventListener(event, resetTimer);
+      });
+    };
+  }, [session]);
+
   const handleAddLog = async (newLog: LogEntry) => {
     try {
       const dbLog = {
@@ -358,7 +398,29 @@ const App: React.FC = () => {
   }
 
   if (!session) {
-    return <Auth />;
+    return (
+      <>
+        {notification.show && (
+          <div className="fixed top-6 right-6 z-[100] animate-in slide-in-from-right-10 fade-in duration-300">
+            <div className={`bg-white px-5 py-4 rounded-xl shadow-2xl border-l-4 flex items-start gap-4 max-w-sm ${notification.type === 'delete' ? 'border-red-500' : notification.type === 'error' ? 'border-amber-500' : 'border-emerald-500'}`}>
+               <div className={`p-2 rounded-full flex-shrink-0 ${notification.type === 'delete' ? 'bg-red-100 text-red-600' : notification.type === 'error' ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600'}`}>
+                 {notification.type === 'delete' ? <Trash2 className="w-5 h-5" /> : notification.type === 'error' ? <X className="w-5 h-5" /> : <CheckCircle className="w-5 h-5" />}
+               </div>
+               <div className="flex-1">
+                 <h4 className="font-bold text-slate-800 text-sm">
+                   {notification.type === 'delete' ? 'Dihapus' : notification.type === 'error' ? 'Error' : 'Berhasil'}
+                 </h4>
+                 <p className="text-sm text-slate-500 leading-snug mt-1">{notification.message}</p>
+               </div>
+               <button onClick={() => setNotification(prev => ({...prev, show: false}))} className="text-slate-400 hover:text-slate-600">
+                 <X className="w-4 h-4" />
+               </button>
+            </div>
+          </div>
+        )}
+        <Auth />
+      </>
+    );
   }
   
   return (
