@@ -74,6 +74,9 @@ const App: React.FC = () => {
   }, []);
 
   const fetchUserRole = async (userId: string) => {
+    // ...
+
+  const fetchUserRole = async (userId: string) => {
   try {
     const { data, error } = await supabase
       .from('profiles')
