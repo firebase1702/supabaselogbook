@@ -374,17 +374,47 @@ const ReportForm: React.FC<ReportFormProps> = ({ onSubmit }) => {
                   <Sun className="w-4 h-4" /> Rutinitas Pagi
                 </h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                  <ChecklistButton label="Pemanasan EDG" active={checklist.pemanasanEDG} onClick={() => handleChecklistChange('pemanasanEDG')} icon={Zap} />
-                  <ChecklistButton label="Housekeeping" active={checklist.housekeeping} onClick={() => handleChecklistChange('housekeeping')} icon={Trash2} />
-                  <ChecklistButton label="Pemanasan Firefighting" active={checklist.pemanasanFirefighting} onClick={() => handleChecklistChange('pemanasanFirefighting')} icon={Flame} />
+                  <div className="flex flex-col gap-2 h-full">
+                    <ChecklistButton label="Pemanasan EDG" active={checklist.pemanasanEDG} onClick={() => handleChecklistChange('pemanasanEDG')} icon={Zap} />
+                    {checklist.pemanasanEDG && (
+                      <input 
+                        type="number" 
+                        placeholder="Level Solar (L)" 
+                        value={checklist.levelSolarEDG || ''}
+                        onChange={(e) => setChecklist(prev => ({...prev, levelSolarEDG: e.target.value}))}
+                        className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      />
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-2 h-full">
+                    <ChecklistButton label="Housekeeping" active={checklist.housekeeping} onClick={() => handleChecklistChange('housekeeping')} icon={Trash2} />
+                  </div>
+                  <div className="flex flex-col gap-2 h-full">
+                    <ChecklistButton label="Pemanasan Firefighting" active={checklist.pemanasanFirefighting} onClick={() => handleChecklistChange('pemanasanFirefighting')} icon={Flame} />
+                    {checklist.pemanasanFirefighting && (
+                      <input 
+                        type="number" 
+                        placeholder="Level Solar (L)" 
+                        value={checklist.levelSolarFirefighting || ''}
+                        onChange={(e) => setChecklist(prev => ({...prev, levelSolarFirefighting: e.target.value}))}
+                        className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      />
+                    )}
+                  </div>
                   
                   {targetPair === 'Unit 1-2' && (
-                    <ChecklistButton label="Drain Kompresor" active={checklist.drainKompresor} onClick={() => handleChecklistChange('drainKompresor')} icon={ArrowDownToLine} />
+                    <div className="flex flex-col gap-2 h-full">
+                      <ChecklistButton label="Drain Kompresor" active={checklist.drainKompresor} onClick={() => handleChecklistChange('drainKompresor')} icon={ArrowDownToLine} />
+                    </div>
                   )}
                   {targetPair === 'Unit 3-4' && (
                     <>
-                      <ChecklistButton label="Drain Separator" active={checklist.drainSeparator} onClick={() => handleChecklistChange('drainSeparator')} icon={ArrowDownToLine} />
-                      <ChecklistButton label="Pemanasan Oil Pump" active={checklist.pemanasanPompaOil} onClick={() => handleChecklistChange('pemanasanPompaOil')} icon={Droplets} />
+                      <div className="flex flex-col gap-2 h-full">
+                        <ChecklistButton label="Drain Separator" active={checklist.drainSeparator} onClick={() => handleChecklistChange('drainSeparator')} icon={ArrowDownToLine} />
+                      </div>
+                      <div className="flex flex-col gap-2 h-full">
+                        <ChecklistButton label="Pemanasan Oil Pump" active={checklist.pemanasanPompaOil} onClick={() => handleChecklistChange('pemanasanPompaOil')} icon={Droplets} />
+                      </div>
                     </>
                   )}
                 </div>
