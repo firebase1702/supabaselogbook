@@ -419,9 +419,9 @@ const History: React.FC<HistoryProps> = ({ logs, onDelete, canDelete }) => {
                               <p className="text-xs font-bold text-slate-500 uppercase mb-2">Checklist Shift</p>
                               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs text-slate-700">
                                 {/* Common Pagi */}
-                                {renderChecklistItem('Pemanasan EDG', log.checklist.pemanasanEDG)}
+                                {renderChecklistItem(`Pemanasan EDG ${log.checklist.levelSolarEDG ? `(${log.checklist.levelSolarEDG} L)` : ''}`, log.checklist.pemanasanEDG)}
                                 {renderChecklistItem('Housekeeping', log.checklist.housekeeping)}
-                                {renderChecklistItem('Pemanasan FF', log.checklist.pemanasanFirefighting)}
+                                {renderChecklistItem(`Pemanasan FF ${log.checklist.levelSolarFirefighting ? `(${log.checklist.levelSolarFirefighting} L)` : ''}`, log.checklist.pemanasanFirefighting)}
                                 
                                 {/* Unit 1-2 Specific */}
                                 {renderChecklistItem('Drain Kompresor', log.checklist.drainKompresor)}
