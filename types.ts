@@ -19,8 +19,10 @@ export interface UnitMetrics {
 export interface ShiftChecklist {
   // Common Pagi Tasks
   pemanasanEDG?: boolean;
+  levelSolarEDG?: number | string;
   housekeeping?: boolean;
   pemanasanFirefighting?: boolean;
+  levelSolarFirefighting?: number | string;
   
   // Unit 1-2 Specific
   drainKompresor?: boolean; // Pagi only
